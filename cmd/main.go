@@ -13,7 +13,5 @@ func main(){
 			"message" : "pong",
 		})
 	})
-
 	server.Run(":8000")
-
 }

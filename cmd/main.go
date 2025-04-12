@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/MarcosAndreLS/go-rest-api/controller"
+	"github.com/MarcosAndreLS/go-rest-api/db"
 	"github.com/MarcosAndreLS/go-rest-api/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -9,6 +10,10 @@ import (
 func main(){
 	
 	server := gin.Default()
+	dbConnection, err := db.ConnectDB()
+	if (err != nil){
+		panic(err)
+	}
 	ProductUseCase := usecase.NewProductUseCase()
 	//camada de controllers
 	productController := controller.NewProductController(ProductUseCase)

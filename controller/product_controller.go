@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	// "github.com/MarcosAndreLS/go-rest-api/model"
 	"github.com/MarcosAndreLS/go-rest-api/model"
@@ -46,4 +47,42 @@ func (p *productController) CreateProduct(ctx *gin.Context){
 	}
 
 	ctx.JSON(http.StatusCreated, insertedProduct)
+}
+
+func (p *productController) GetProductById(ctx *gin.Context){
+
+	id := ctx.Param("productId")
+
+	if id == "" {
+		response := model.Response{
+			Message: "Id do produto não pode ser nulo",
+		}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	productId, err := strconv.Atoi(id)
+	if(err != nil){
+		response := model.Response{
+			Message: "Id do produto precisa ser um numero",
+		}
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	product, err := p.productUseCase.GetProductById(productId)
+	if (err != nil){
+		ctx.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	if product ==nil{
+		response := model.Response{
+			Message: "Produto não foi encontrado na base de dados",
+		}
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, product)
 }
